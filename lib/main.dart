@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-void main() {
+import 'notification.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+NotificationAppLaunchDetails notificationAppLaunchDetails;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //await initStore();
+  //store = getStore();
+  notificationAppLaunchDetails =
+      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+  await initNotifications(flutterLocalNotificationsPlugin);
+  requestIOSPermissions(flutterLocalNotificationsPlugin);
   runApp(MyApp());
 }
 
@@ -61,6 +75,14 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    scheduleNotificationPeriodically(flutterLocalNotificationsPlugin, "0",
+        "Test Notification", RepeatInterval.EveryMinute);
   }
 
   @override
